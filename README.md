@@ -18,7 +18,7 @@ El cluster esta mal distribuido.
 
 Existe varias soluciones, mostrare dos (2):
 
-1. Duplicar la llave en todos los nodos del cluster de Redis existente. Se podria logar por medio de un cron o algun proceso batch.
+1. Duplicar la llave en todos los nodos del cluster de Redis existente. Se podria logar por medio de un **cron** o algun proceso **batch**.
 ```
 List<Product> topProduct = rabkingProduct.getTopProduct();
 redis.set("top_product:1", topProduct);
@@ -33,7 +33,7 @@ cada instancia consulta Redis, pero al momento de recuperar la informacion, pers
 
 ![diagram.png](diagram.png)
 
-Si tenemos 10 instancia, cada instancia inicialmente consulta Redis, pero al momento de recueprar la informacion, persiste la data en local “caffeine”. 
+Si tenemos 10 instancia, cada instancia inicialmente consulta Redis, pero al momento de recuperar la información, persiste la data en local “caffeine”. 
 En la segunda consulta, ya Redis no se consulta y esto evitaria una alta demanda de lectura sobre un nodo especifico de Redis.
 
 
