@@ -1,0 +1,59 @@
+services:
+  #microservice-redis:
+  #  build: ./
+  #  mem_limit: 512m
+  #  depends_on:
+  #    - redis
+  redis:
+    image: redis:7
+    container_name: erp-redis
+    command: redis-server --requirepass admin --maxmemory 512mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    networks:
+      - hybrid-cache-vpc
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "admin", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    restart: always
+    container_name: redis-ui
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0:admin
+      - HTTP_USER=admin
+      - HTTP_PASSWORD=admin
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - hybrid-cache-vpc
+  mongodb:
+    image: mongo:8.0.5
+    platform: linux/arm64/v8
+    container_name: erp-mongodb
+    mem_limit: 512m
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: product_catalog_db
+    volumes:
+      - ./db/mongodb:/docker-entrypoint-initdb.d
+    networks:
+      - hybrid-cache-vpc
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')", "-u", "debuggeandoideas", "-p", "admin", "--authenticationDatabase", "admin", "--quiet" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+networks:
+  hybrid-cache-vpc:
+    driver: bridge
