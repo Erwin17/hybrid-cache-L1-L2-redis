@@ -3,10 +3,9 @@
 
 Este ejemplo muestro como implementar cache de Redis en dos niveles **L1 + L2** junto a la libreria Caffeine.
 
-En Redis hay un temrino llamado **hot keys**.
+En Redis hay un termino llamado **hot keys**.
 
-Las **host key** o llaves caliente son llaves que reciben una 
-cantidad de llamadas desproporcionada en un nodo especifico de 
+Las **host key** o llaves caliente, son llaves de Redis que reciben una cantidad de llamadas desproporcionada en un nodo especifico de 
 un cluster de Redis.
 
 ```
@@ -18,7 +17,7 @@ El cluster esta mal distribuido.
 
 Existe varias soluciones, mostrare dos (2):
 
-1. Duplicar la llave en todos los nodos del cluster de Redis existente. Se podria logar por medio de un **cron** o algun proceso **batch**.
+1. Duplicar la llave en todos los nodos del cluster de Redis existente. Se podria lograr por medio de un **cron** o algun proceso **batch**.
 ```
 List<Product> topProduct = rabkingProduct.getTopProduct();
 redis.set("top_product:1", topProduct);
